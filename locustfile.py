@@ -2,6 +2,9 @@ from locust import HttpLocust, TaskSet, task
 from http.cookies import SimpleCookie
 from bs4 import BeautifulSoup
 import json
+from faker import Faker
+
+fake = Faker()
 
 HOST = "http://localhost:8000"
 MIN_WAIT = 5000
@@ -47,12 +50,12 @@ class VisitorBehavior(TaskSet, Helpers):
         csrf_token = self.parse_csrf(response.text)
         response = self.client.post("/checkout/shipping-address/", {
             "csrfmiddlewaretoken":csrf_token,
-            "email":"test@example.com",
+            "email":fake.email(),
             "phone":"1234567890",
-            "first_name": "Joe",
-            "last_name": "Doe",
-            "company_name": "",
-            "street_address_1": "123 Main St",
+            "first_name": fake.first_name(),
+            "last_name": fake.last_name(),
+            "company_name": fake.company(),
+            "street_address_1": fake.street_address(),
             "street_address_2": "",
             "city": "The Land",
             "country_area": "OH",
