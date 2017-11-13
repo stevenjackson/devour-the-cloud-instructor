@@ -1,5 +1,8 @@
 ---
-# clone the saleor repo locally
+- name: Update apt packages
+  become: true
+  apt:
+    update_cache: yes
 
 # make sure git is installed
 - name: install git
@@ -42,7 +45,7 @@
   shell: |
     curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 
-- name: install nodejs 
+- name: install nodejs
   become: True
   when: not nodejs_binary.stat.exists
   apt:
