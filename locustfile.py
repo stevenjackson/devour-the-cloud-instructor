@@ -42,10 +42,8 @@ class VisitorBehavior(TaskSet, Helpers):
     def buy(self):
         self.client.get("/")
         response = self.client.get("/products/category/apparel-1/")
-        first_product = self.parse_product_links(response.text)[0]
-        response = self.client.get(first_product)
-        first_variant = self.parse_variants(response.text)[0]["id"]
-        response = self.post_ajax("{0}add/".format(first_product), {"quantity":1, "variant":first_variant })
+        response = self.client.get("/products/codemash-1/")
+        response = self.post_ajax("/products/codemash-1/add/", {"quantity":1, "variant":1 })
         response = self.client.get("/checkout/")
         csrf_token = self.parse_csrf(response.text)
         response = self.client.post("/checkout/shipping-address/", {
