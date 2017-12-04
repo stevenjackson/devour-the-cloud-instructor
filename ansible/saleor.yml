@@ -2,3 +2,4 @@
 - hosts: saleors
   roles:
     - saleor
+    - easySSH

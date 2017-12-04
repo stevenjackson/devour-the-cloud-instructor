@@ -2,3 +2,4 @@
 - hosts: locusts
   roles:
     - locust
+    - easySSH
