@@ -10,6 +10,7 @@ fake = Faker()
 HOST = "http://localhost:8000"
 MIN_WAIT = 5000
 MAX_WAIT = 9000
+USER_SPEED = 1 #higher is faster
 
 class Helpers:
     def parse_csrf(self, string):
@@ -44,6 +45,9 @@ class Helpers:
     def generate_email(self):
         return "{}_{:f}@example.com".format(fake.user_name(), time.time())
 
+    def simulate_user_form_fill_time(self, task_time):
+        time.sleep(task_time / USER_SPEED)
+
 class SharedTasks(Helpers):
     def register_user(self):
         response = self.client.get("/account/signup/")
@@ -65,6 +69,7 @@ class SharedTasks(Helpers):
     def checkout(self):
         response = self.client.get("/checkout/")
         csrf_token = self.parse_csrf(response.text)
+        self.simulate_user_form_fill_time(30)
         response = self.client.post("/checkout/shipping-address/", {
             "csrfmiddlewaretoken":csrf_token,
             "address":"new_address",
@@ -81,6 +86,7 @@ class SharedTasks(Helpers):
             "country": "US",
         })
         csrf_token = self.parse_csrf(response.text)
+        self.simulate_user_form_fill_time(5)
         response = self.client.post("/checkout/shipping-method/", {
             "csrfmiddlewaretoken":csrf_token,
             "method": "1"
