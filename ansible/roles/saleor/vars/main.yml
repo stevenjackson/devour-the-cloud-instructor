@@ -5,7 +5,7 @@
 cache_update_valid_secs: 900
 
 # saleor git repo
-saleor_git_repo_url: git@github.com:stevenjackson/saleor.git
+saleor_git_repo_url: https://github.com/stevenjackson/saleor.git
 saleor_git_version: master
 saleor_directory: /home/ubuntu/saleor
 
