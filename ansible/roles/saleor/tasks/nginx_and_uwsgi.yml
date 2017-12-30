@@ -77,13 +77,6 @@
     name: uwsgi
     state: "present"
 
-- name: make www-data our django project group
-  become: True
-  file:
-    state: directory
-    recurse: yes
-    group: www-data
-    path: "{{ saleor_directory }}"
 
 - name: add ubuntu user to www-data group
   become: True
@@ -98,6 +91,15 @@
   django_manage:
     command: collectstatic
     app_path: "{{ saleor_directory }}"
+
+# do this at the end of django related operations
+- name: make www-data our django project group
+  become: True
+  file:
+    state: directory
+    recurse: yes
+    group: www-data
+    path: "{{ saleor_directory }}"
 
 - name: install our new NGINX Django configuration
   become: True
