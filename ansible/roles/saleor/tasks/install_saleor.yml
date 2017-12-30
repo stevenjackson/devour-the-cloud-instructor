@@ -114,6 +114,13 @@
     type: database
     grant_option: yes
 
+- name: create Django migrations
+  django_manage:
+    command: makemigrations
+    app_path: "{{ saleor_directory }}"
+  environment:
+    SECRET_KEY: "{{ django_secret_key }}"
+
 - name: run Django migrations
   django_manage:
     command: migrate
@@ -130,3 +137,11 @@
   shell: yarn run build-assets
   args:
     chdir: "{{ saleor_directory }}"
+
+- name: collect django static files
+  django_manage:
+    command: collectstatic
+    app_path: "{{ saleor_directory }}"
+  environment:
+    SECRET_KEY: "{{ django_secret_key }}"
+
