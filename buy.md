@@ -38,35 +38,37 @@ So we'll want locust to simulate going to these pages and filling out the forms.
 
 1. On the locust machine, update git so that we're at a good starting point.
 
-```
-cd ~/loadtest
-git fetch origin
-git reset --hard origin/buy_script
-```
+    ```bash
+    ubuntu@locust:~$ cd ~/loadtest
+    ubuntu@locust:~/loadtest$ git fetch origin
+    ubuntu@locust:~/loadtest$ git reset --hard origin/buy_script
+    ```
 
 1. Open `locustfile.py` in your text editor of choice.
 Looking at the file, you'll find that things are defined somewhat bottom-up.  In python you can't use names that are defined later in the file,  so our helpers are defined first.
 So if we start at the bottom, we'll find the `Visitor` class:
-```
-class Visitor(HttpLocust):
-    task_set = VisitorBehavior
-    min_wait = 5000
-    max_wait = 10000
-```
 
-The `Visitor` class is a "locust" in our LoadTest.  Each locust is a user that will follow a `task_set`.  The `min_wait` and `max_wait` provide the window where our user will wait between tasks.  So this locust will do one task from `VisitorBehavior` and then wait 5-10 seconds before doing another task.  We'll get into more of this when we talk about user funnel.
+    ```python
+    class Visitor(HttpLocust):
+        task_set = VisitorBehavior
+        min_wait = 5000
+        max_wait = 10000
+    ```
 
-Above `Visitor` is `VisitorBehavior`:
-```
-class VisitorBehavior(TaskSet):
-    @task
-    def buy(self):
-        pass
-```
+    The `Visitor` class is a "locust" in our LoadTest.  Each locust is a user that will follow a `task_set`.  The `min_wait` and `max_wait` provide the window where our user will wait between tasks.  So this locust will do one task from `VisitorBehavior` and then wait 5-10 seconds before doing another task.  We'll get into more of this when we talk about user funnel.
 
-This is the `TaskSet` for our `Visitor` locust.  Tasks are just python methods with a `@task` decorator.  For this exercise we'll fill in the `buy` task.
+    Above `Visitor` is `VisitorBehavior`:
 
-The top of the file is imports and a `Helpers` class.  We won't modify these during the workshop.  They're here so they can be used by our locust tasks.
+    ```python
+    class VisitorBehavior(TaskSet):
+        @task
+        def buy(self):
+            pass
+    ```
+
+    This is the `TaskSet` for our `Visitor` locust.  Tasks are just python methods with a `@task` decorator.  For this exercise we'll fill in the `buy` task.
+
+    The top of the file is imports and a `Helpers` class.  We won't modify these during the workshop.  They're here so they can be used by our locust tasks.
 
 ## Purchase Hoodie
 
@@ -75,7 +77,8 @@ Back in our web browser, we want to investigate how saleor works so we can simul
 ### Home Page
 
 The first thing we believe a user would do is visit the home page.  So let's visit that page via locust.
-```
+
+```python
 def buy(self):
     self.client.get("/")
 ```
@@ -92,7 +95,8 @@ Looking at the home page, we see that there are categories for products.  Thinki
 ![Apparel Page](screenshots/apparel_page.png)
 
 Looking at the browser URL that seems to be the `/products/category/apparel-1/` route.  So update our script:
-```
+
+```python
 def buy(self):
     self.client.get("/")
     self.client.get("/products/category/apparel-1/")
@@ -106,7 +110,8 @@ Aha!  The object of our quest!
 ![Hoodie Page](screenshots/hoodie_page.png)
 Perfect!
 Looking at the browser URL that seems to be the `/products/codemash-1/` route.  So update our script:
-```
+
+```python
 def buy(self):
     self.client.get("/")
     self.client.get("/products/category/apparel-1/")
@@ -124,6 +129,10 @@ On every product page there is a prominent "ADD TO CART" button.  Let's see what
 ![Hoodie Page Dev Tools](screenshots/hoodie_page_dev_tools.png)
 
 ![Add To Cart Data](screenshots/add_to_cart_data.png)
+
+
+There's our parameters:
+
 ```
 quantity:1
 variant:1
@@ -131,7 +140,7 @@ variant:1
 
 If you inspect this network request carefully, you'll find it's an ajax call - these kind of requests allow a client to send/receive data to the server without changing the loaded page.  We have a helper function for these requests to handle some strangeness around cookies and CSRF tokens.
 
-```
+```python
 def buy(self):
     self.client.get("/")
     self.client.get("/products/category/apparel-1/")
@@ -144,7 +153,7 @@ def buy(self):
 Now that we have a an item in our cart, we can proceed to checkout.
 ![Add To Cart](screenshots/add_to_cart.png)
 
-```
+```python
 def buy(self):
     self.client.get("/")
     self.client.get("/products/category/apparel-1/")
@@ -162,7 +171,7 @@ _Note:  This page uses a lot of the techniques from [signup](signup.md#submit-th
 
 So if we fill out and submit the form we'll be able to see the form fields in the networks tab.  As expected, one of the necessary fields is the `csrfmiddlewaretoken` so we'll need to pull that off the page to use in our form submission.
 
-```
+```python
 def buy(self):
     self.client.get("/")
     self.client.get("/products/category/apparel-1/")
@@ -196,7 +205,7 @@ Next we pick our shipping method:
 
 Same process as Shipping Address, fill out the form and check the network tab in dev tools.  Add this form to our locust script:
 
-```
+```python
 def buy(self):
     self.client.get("/")
     self.client.get("/products/category/apparel-1/")
@@ -232,7 +241,8 @@ For this form, we'll take the easy way out and say "Same as Shipping".
 ![Billing Address](screenshots/billing_address_form.png)
 
 Submit the form, check the network tab and add it to our locust script:
-```
+
+```python
 def buy(self):
     self.client.get("/")
     self.client.get("/products/category/apparel-1/")
@@ -273,7 +283,8 @@ Saleor ships with many options for configuring payment providers.  To make this 
 ![Fake Payment](screenshots/fake_payment_form.png)
 
 And we'll complete our script by "submitting payment":
-```
+
+```python
 def buy(self):
     self.client.get("/")
     self.client.get("/products/category/apparel-1/")
@@ -319,15 +330,17 @@ Locust provides the ability to create a friendly `name` for a request so that it
 1. Save the file and close your editor
 1. Re-find/copy the public DNS name for saleor: `http://<Saleor DNS>`
 1. Start locust:
-```
-locust --host http://<Saleor DNS>
-```
-It should look something like this:
-```
-ubuntu@ip-172-31-43-238:~/loadtest$ locust --host http://ec2-18-217-108-45.us-east-2.compute.amazonaws.com
-[2017-12-24 02:58:54,522] ip-172-31-43-238/INFO/locust.main: Starting web monitor at *:8089
-[2017-12-24 02:58:54,522] ip-172-31-43-238/INFO/locust.main: Starting Locust 0.8
-```
+
+    ```bash
+    ubuntu@locust:~/loadtest$ locust --host http://<Saleor DNS>
+    ```
+    It should look something like this:
+
+    ```bash
+    ubuntu@locust:~/loadtest$ locust --host http://ec2-18-217-108-45.us-east-2.compute.amazonaws.com
+    [2017-12-24 02:58:54,522] ip-172-31-43-238/INFO/locust.main: Starting web monitor at *:8089
+    [2017-12-24 02:58:54,522] ip-172-31-43-238/INFO/locust.main: Starting Locust 0.8
+    ```
 
 1. Now we need the Public DNS for the Load Test machine:
 ![Locust DNS](screenshots/locust_dns.png)
