@@ -6,7 +6,7 @@
 2. When registration is completed and you are signed in, navigate to [https://console.aws.amazon.com](https://console.aws.amazon.com).
 
 
-## Provision an EC2 Instance
+## Provision an EC2 Instance for Saleor (our e-commerce system-under-test)
 
 1. Navigate to [https://console.aws.amazon.com](https://console.aws.amazon.com).
 1. Use the search field under "AWS Services" to search for EC2 
@@ -15,7 +15,7 @@
 <br/>![](screenshots/aws_search_ec2.png)
 3. Click on **Launch Instance**.
 <br/>![](screenshots/launch_instance.png)
-4. Find the AMI for **Ubuntu Server 16.04LTS (HVM), SSD Volume Type** - ami-7c803d1c. Click **Select**.
+4. Find the Amazon Machine Image (AMI) __provided by the instructors for Saleor__ by selecting **Community AMIs** and typing in the AMI ID in the Search window. When it appears, press the **Select** button next to it.
 <br/>![](screenshots/select_ubuntu.png)
 5. Choose an instance type of **m5.large** and click **Review and Launch**.
 <br/>![](screenshots/select_instance_type.png)
@@ -41,6 +41,13 @@
     ```
 
 10. Click **Launch Instance**.
+11. You can monitor the Instance state as it starts up by monitoring select **Instances** from the **EC2 Dashboard**
+<br/>![](screenshots/ec2_dashboard-instances.png)
+12. Once your **Saleor** instance has reached the **Running** **Instance State** you can connect to it with your web browser.
+13. Select the **Saleor** instance to bring up its details.  Copy the **Public DNS** value to the Clipboard
+<br/>![](screenshots/ec2_saleor_instance-details.png) 
+15.  Paste the **Public DNS** value to your browser and test that Saleor is working
+<br/>![](screenshots/saleor_in_browser.png)
 
 ### Key Management
 Anyone who has the private key you just downloaded can log into your EC2 instance. The first thing you should do is place it somewhere meaningful on your computer where you will remember where and what it is. Your *Downloads* folder is not an appropriate place for long-term key storage. 
@@ -49,7 +56,15 @@ Anyone who has the private key you just downloaded can log into your EC2 instanc
 
 We recommend you go to [https://console.aws.amazon.com/billing/](https://console.aws.amazon.com/billing/) and configure **billing alerts** that will let you know if you start getting charges on your account. If you make a mistake or start getting unexpected traffic you'll be able to react quickly and avoid getting any surprising charges.
 
-## Log into EC2 Remotely with SSH
+
+## Provision an EC2 Instance for Locust (our load testing system)
+
+1. Follow the instructions from above for "Provision an EC2 Instance for Saleor (our e-commerce system-under-test)" with following changes:
+1.  Use the AMI ID provided by the instructors for **Locust**
+1.  Do not create a new **Security Group** - select the **codemash18** group created when you launched your Saleor instance
+1.  When you add the **Name** Tag, use a value of **locust**
+
+## Log into Locust EC2 Remotely with SSH
 
 1. Open EC2 Dashboard at [https://console.aws.amazon.com/ec2/](https://console.aws.amazon.com/ec2/). Click on **Instances**.
 <br/>![](screenshots/5_instance.png)
@@ -63,3 +78,5 @@ We recommend you go to [https://console.aws.amazon.com/billing/](https://console
 
     > Note: The "ec2_user" for Ubuntu Server on AWS is ```ubuntu```.
 4. You should have a login
+
+
