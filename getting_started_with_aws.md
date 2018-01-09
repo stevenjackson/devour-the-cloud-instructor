@@ -49,9 +49,6 @@
 15.  Paste the **Public DNS** value to your browser and test that Saleor is working
 <br/>![](screenshots/saleor_in_browser.png)
 
-### Key Management
-Anyone who has the private key you just downloaded can log into your EC2 instance. The first thing you should do is place it somewhere meaningful on your computer where you will remember where and what it is. Your *Downloads* folder is not an appropriate place for long-term key storage. 
-
 ### Set Up Billing Alerts
 
 We recommend you go to [https://console.aws.amazon.com/billing/](https://console.aws.amazon.com/billing/) and configure **billing alerts** that will let you know if you start getting charges on your account. If you make a mistake or start getting unexpected traffic you'll be able to react quickly and avoid getting any surprising charges.
