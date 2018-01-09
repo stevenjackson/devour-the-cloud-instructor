@@ -71,7 +71,7 @@ If you know how to use Keys with SSH, feel free to do so for the workshop.
 
 
 1. Open EC2 Dashboard at [https://console.aws.amazon.com/ec2/](https://console.aws.amazon.com/ec2/). Click on **Instances**.
-<br/>![](screenshots/5_instance.png)
+<br/>![](screenshots/locust_dns.png)
 2. Copy the Public DNS Hostname of the instance, and initiate an SSH connection.Use **ubuntu** as the username.  On Mac OS X and Linux you can use the following from a terminal:
 
     ```
